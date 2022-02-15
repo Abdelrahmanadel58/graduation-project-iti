@@ -1,0 +1,4 @@
+- name: deploy
+  hosts: localhost
+  roles:
+    - /home/abdelrahmanadel58/ansible/roles/k8s

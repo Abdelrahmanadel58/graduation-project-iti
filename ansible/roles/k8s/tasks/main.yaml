@@ -1,0 +1,136 @@
+- name: create namespace
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: jenkins
+- name: make default namespace
+  shell: "kubectl config set-context --current --namespace=jenkins"
+
+- name: create deployment for jenkins
+  k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: jenkins
+        creationTimestamp: null
+        labels:
+          app: jenkins
+        name: jenkins
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: jenkins
+        strategy: {}
+        template:
+          metadata:
+            creationTimestamp: null
+            labels:
+              app: jenkins
+          spec:
+            containers:
+            - image: jenkins/jenkins:latest
+              name: jenkins
+              resources: {}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+                - containerPort: 5000
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 5
+                httpGet:
+                  path: /login
+                  port: 8080
+                  scheme: HTTP
+                periodSeconds: 10
+                successThreshold: 2
+                timeoutSeconds: 5
+              volumeMounts:
+                - mountPath: /var/jenkins_home
+                  name: jenkins-home
+            volumes:
+            - name: jenkins-home
+              hostPath :
+                 path: ~/jenkins
+      status: {}
+
+- name: create loadblancer for jenkins
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        namespace: jenkins
+        name: jenkins-loadblancer
+      spec:
+        selector:
+          app: jenkins
+        ports:
+          - port: 8080
+            targetPort: 8080
+        type: LoadBalancer
+
+- name: create jenkins-slave
+  k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        namespace: jenkins
+        name: jenkins-slave
+        labels:
+          app: jenkins-slave
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: jenkins-slave
+        template:
+          metadata:
+            labels:
+              app: jenkins-slave
+          spec:
+            containers:
+            - name: jenkins-slave
+              image: abdelrahman58/jenkins-slave:v1
+              ports:
+              - containerPort: 22
+              volumeMounts:
+                - mountPath: /var/run/docker.sock 
+                  name: jenkins-home
+            volumes:
+            - name: jenkins-home
+              hostPath :
+                 path: /var/run/docker.sock 
+
+- name: create service jenkins-slave
+  k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        namespace: jenkins
+        creationTimestamp: null
+        labels:
+          app: jenkins
+        name: jenkins-centos-slave-svc
+      spec:
+        ports:
+        - name: jenkins-centos-slave
+          port: 22
+          protocol: TCP
+          targetPort: 22
+        selector:
+          app: jenkins-slave
+        type: ClusterIP
+      status:
+        loadBalancer: {}
