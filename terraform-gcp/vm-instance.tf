@@ -11,7 +11,8 @@ resource "google_compute_instance" "management" {
     }
   }
   depends_on = [
-    google_service_account.vm
+    google_service_account.vm,
+    google_container_node_pool.primary_preemptible_nodes
   ]
 
   // Local SSD disk
