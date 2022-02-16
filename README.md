@@ -38,6 +38,6 @@ Using Jenkins Pipeline to connect btw Our Repo to deployment in GKE
 
 
 ### Contributors:
-|![Abdelrahman Adel](images/WhatsApp Image 2022-02-15 at 9.56.07 PM.jpeg)|![Gamal Nafel](images/1637527753861.jpeg)|
+|![Abdelrahman Adel](https://github.com/Abdelrahmanadel58/graduation-project-iti/blob/main/images/WhatsApp%20Image%202022-02-15%20at%209.56.07%20PM.jpeg)|![Gamal Nafel](images/1637527753861.jpeg)|
 |:-----------------:|:-----------------:|
 |[Abdelrahman Adel](https://github.com/Abdelrahmanadel58)|[Gamal Nafel](https://github.com/enggamal)|
