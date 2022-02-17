@@ -1,6 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  namespace: jenkins
   name: back-end
   labels:
     app: backend
@@ -23,6 +24,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: jenkins
   name: backend-loadblancer
 spec:
   selector:
