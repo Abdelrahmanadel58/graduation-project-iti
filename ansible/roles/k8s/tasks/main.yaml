@@ -57,7 +57,7 @@
             volumes:
             - name: jenkins-home
               hostPath :
-                 path: ~/jenkins
+                 path: /tmp
       status: {}
 
 - name: create loadblancer for jenkins
