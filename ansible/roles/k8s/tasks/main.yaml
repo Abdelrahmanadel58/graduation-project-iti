@@ -34,7 +34,7 @@
               app: jenkins
           spec:
             containers:
-            - image: jenkins/jenkins:latest
+            - image: jenkins/jenkins:lts-jdk11
               name: jenkins
               resources: {}
               ports:
